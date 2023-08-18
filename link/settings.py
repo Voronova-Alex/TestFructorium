@@ -43,7 +43,10 @@ ALLOWED_HOSTS = env("ALLOWED_HOSTS").split()
 
 # Application definition
 
-PROJECT_APPS = []
+PROJECT_APPS = [
+    "apps.account",
+    "apps.image"
+]
 
 INSTALLED_LIBS = [
     "drf_spectacular",
@@ -78,6 +81,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "link.middleware.LoggingMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "link.urls"
@@ -100,6 +104,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "link.wsgi.application"
 
+AUTH_USER_MODEL = "account.Account"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -169,9 +174,9 @@ if not DEBUG:
 
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Baza",
-    "DESCRIPTION": "Baza",
-    "VERSION": "Test",
+    "TITLE": "Link",
+    "DESCRIPTION": "Link",
+    "VERSION": "1",
     "SCHEMA_PATH_PREFIX": r"/api/v[0-9]",
     "SWAGGER_UI_SETTINGS": {
         "filter": True,
@@ -190,9 +195,6 @@ SPECTACULAR_SETTINGS = {
         "ErrorCode415Enum": "drf_standardized_errors.openapi_serializers.ErrorCode415Enum.values",
         "ErrorCode429Enum": "drf_standardized_errors.openapi_serializers.ErrorCode429Enum.values",
         "ErrorCode500Enum": "drf_standardized_errors.openapi_serializers.ErrorCode500Enum.values",
-        "SearchTypeEnum": "apps.global_search.models.search_query.SearchQuery.SearchTypes",
-        "IndexingTypeEnum": "apps.global_search.models.indexing.Indexing.IndexingTypes",
-        "SourcePoolsOperationEnum": "apps.global_search.models.search_query.SearchQuery.BooleanOperation",
     },
     "POSTPROCESSING_HOOKS": [
         "drf_standardized_errors.openapi_hooks.postprocess_schema_enums"
@@ -219,7 +221,7 @@ URL_RESET_PASSWORD = env("URL_RESET_PASSWORD")
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "filters": {"request_id": {"()": "baza.middleware.RequestIDFilter"}},
+    "filters": {"request_id": {"()": "link.middleware.RequestIDFilter"}},
     "formatters": {
         "django.request": {
             "()": "django.utils.log.ServerFormatter",
