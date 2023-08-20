@@ -11,7 +11,7 @@ from link.exceptions.account import (
 
 
 class AccountDetailSerializer(serializers.ModelSerializer):
-    # photo_read = ImageSerializer(source="photo", read_only=True)
+    photo_read = ImageSerializer(source="photo", read_only=True)
 
     class Meta:
         model = Account
@@ -20,9 +20,15 @@ class AccountDetailSerializer(serializers.ModelSerializer):
             "username",
             "email",
             "photo",
-            # "photo_read",
+            "photo_read",
         )
         extra_kwargs = {"photo": {"write_only": True}}
+
+    def validate_email(self, value):
+        if Account.objects.filter(email=value):
+            raise EmailAccountException
+
+        return value
 
 
 class AccountCreateSerializer(serializers.ModelSerializer):
@@ -32,6 +38,7 @@ class AccountCreateSerializer(serializers.ModelSerializer):
             "password",
             *AccountDetailSerializer.Meta.fields,
         )
+        extra_kwargs = {"password": {"write_only": True}}
 
     def validate_password(self, value):
         try:
@@ -45,6 +52,9 @@ class AccountCreateSerializer(serializers.ModelSerializer):
             raise EmailAccountException
 
         return value
+
+    def create(self, validated_data):
+        return Account.objects.create_user(**validated_data)
 
 
 class PasswordUpdateSerializer(serializers.ModelSerializer):

@@ -13,7 +13,7 @@ from link.settings import SERVER_NAME, URL_RESET_PASSWORD
 class Account(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=50, blank=True)
     email = models.EmailField(unique=True)
-    photo = models.ForeignKey(Image, on_delete=models.CASCADE, related_name="account_images", blank=True)
+    photo = models.ForeignKey(Image, on_delete=models.CASCADE, related_name="account_images", blank=True, null=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)

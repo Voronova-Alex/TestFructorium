@@ -1,6 +1,5 @@
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from apps.account.models import Account
 from apps.account.serializers.account import (
@@ -21,7 +20,6 @@ class AccountDetailView(RetrieveUpdateAPIView):
     serializer_class = AccountDetailSerializer
     queryset = Account.objects.none()
     http_method_names = ("get", "patch")
-    permission_classes = (JWTAuthentication,)
 
     def get_object(self):
         return self.request.user
@@ -36,6 +34,8 @@ class AccountDetailView(RetrieveUpdateAPIView):
 class AccountCreateView(CreateAPIView):
     serializer_class = AccountCreateSerializer
     queryset = Account.objects.all()
+    permission_classes = ()
+    authentication_classes = ()
 
 
 @extend_schema(tags=["account | password"])
@@ -48,7 +48,6 @@ class PasswordUpdateView(RetrieveUpdateAPIView):
     serializer_class = PasswordUpdateSerializer
     queryset = Account.objects.none()
     http_method_names = ("patch",)
-    permission_classes = (JWTAuthentication,)
 
     def get_object(self):
         return self.request.user
