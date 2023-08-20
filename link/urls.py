@@ -33,6 +33,7 @@ urlpatterns = [
             [
                 path("", include("apps.account.urls")),
                 path("", include("apps.image.urls")),
+                path("", include("apps.bookmark.urls")),
             ]
         ),
     ),

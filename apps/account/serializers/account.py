@@ -3,6 +3,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from apps.account.models import Account
+from apps.image.models import Image
 from apps.image.serializers import ImageSerializer
 from link.exceptions.account import (
     EmailAccountException,
@@ -11,7 +12,10 @@ from link.exceptions.account import (
 
 
 class AccountDetailSerializer(serializers.ModelSerializer):
-    photo_read = ImageSerializer(source="photo", read_only=True)
+    photo = ImageSerializer(read_only=True)
+    photo_id = serializers.PrimaryKeyRelatedField(
+        queryset=Image.objects.all(), source="photo", write_only=True
+    )
 
     class Meta:
         model = Account
@@ -20,9 +24,8 @@ class AccountDetailSerializer(serializers.ModelSerializer):
             "username",
             "email",
             "photo",
-            "photo_read",
+            "photo_id",
         )
-        extra_kwargs = {"photo": {"write_only": True}}
 
     def validate_email(self, value):
         if Account.objects.filter(email=value):
@@ -31,7 +34,7 @@ class AccountDetailSerializer(serializers.ModelSerializer):
         return value
 
 
-class AccountCreateSerializer(serializers.ModelSerializer):
+class AccountCreateSerializer(AccountDetailSerializer):
     class Meta:
         model = AccountDetailSerializer.Meta.model
         fields = (
@@ -45,12 +48,6 @@ class AccountCreateSerializer(serializers.ModelSerializer):
             validate_password(value)
         except ValidationError as exc:
             raise serializers.ValidationError(str(exc))
-        return value
-
-    def validate_email(self, value):
-        if Account.objects.filter(email=value):
-            raise EmailAccountException
-
         return value
 
     def create(self, validated_data):

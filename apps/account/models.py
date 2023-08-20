@@ -43,4 +43,4 @@ def password_reset_token_created(
     email = reset_password_token.user.email
     #тут можно использовать celery
 
-    send_email_user(subject, email_plaintext_message, email)
+    send_email_user.delay(subject, email_plaintext_message, email)

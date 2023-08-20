@@ -15,20 +15,20 @@ from pathlib import Path
 
 import environ
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
+
 env = environ.Env(
     DEBUG=(bool, False),
-    ACCESS_TOKEN_LIFETIME_MINUTES=(int, 30),
+    ACCESS_TOKEN_LIFETIME_MINUTES=(int, 100),
     ACCESS_TOKEN_LIFETIME_DAYS=(int, 0),
     REFRESH_TOKEN_LIFETIME_MINUTES=(int, 0),
-    REFRESH_TOKEN_LIFETIME_DAYS=(int, 30),
+    REFRESH_TOKEN_LIFETIME_DAYS=(int, 100),
     EMAIL_USE_TLS=(bool, False),
     EMAIL_USE_SSL=(bool, False),
 )
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -45,7 +45,8 @@ ALLOWED_HOSTS = env("ALLOWED_HOSTS").split()
 
 PROJECT_APPS = [
     "apps.account",
-    "apps.image"
+    "apps.image",
+    "apps.bookmark",
 ]
 
 INSTALLED_LIBS = [
@@ -57,7 +58,7 @@ INSTALLED_LIBS = [
     "django_filters",
     "drf_standardized_errors",
     "django_rest_passwordreset",
-    "django_celery_beat",
+    # "django_celery_beat",
     "django_cleanup.apps.CleanupConfig",
 ]
 
@@ -266,3 +267,4 @@ LOGGING = {
 }
 
 CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS").split()
+CELERY_BROKER_URL = env("CELERY_BROKER_URL")
