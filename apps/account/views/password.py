@@ -59,7 +59,6 @@ class ResetPassword(ResetPasswordConfirm):
         data = {}
         response = super().post(request, *args, **kwargs)
         token = TokenObtainPairSerializer.get_token(user)
-        user.last_login = datetime.datetime.now()
         user.save()
         data["refresh"] = str(token)
         data["access"] = str(token.access_token)

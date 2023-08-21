@@ -37,7 +37,7 @@ def get_info(validated_data):
         if titles:
             validated_data["title"] = ". ".join(
                 [title.get_text() for title in titles]
-            )
+            )[:50]
         if meta_descriptions:
             validated_data["description"] = ". ".join(
                 [
@@ -45,5 +45,4 @@ def get_info(validated_data):
                     for meta_description in meta_descriptions
                 ]
             )
-        print(validated_data)
     return validated_data

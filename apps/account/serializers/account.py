@@ -35,6 +35,8 @@ class AccountDetailSerializer(serializers.ModelSerializer):
 
 
 class AccountCreateSerializer(AccountDetailSerializer):
+    photo = ImageSerializer(read_only=True)
+
     class Meta:
         model = AccountDetailSerializer.Meta.model
         fields = (
@@ -61,6 +63,7 @@ class PasswordUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
         fields = ("password", "old_password")
+
 
     def validate_old_password(self, value):
         user = self.context["request"].user

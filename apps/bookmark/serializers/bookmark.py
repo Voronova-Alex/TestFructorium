@@ -25,6 +25,7 @@ class BookmarkCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data = get_info(validated_data)
         validated_data["owner"] = self.context["request"].user
+        print(validated_data)
         return super().create(validated_data)
 
 
