@@ -1,0 +1,61 @@
+version: '3.10'
+
+services:
+  web:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    command: gunicorn link.wsgi:application --bind 0.0.0.0:8005
+    ports:
+      - ${WEB_PORT}
+    volumes:
+      - ${WEB_STATIC}:/home/app/web/static/
+      - ${WEB_MEDIA}:/home/app/web/media/
+    depends_on:
+      db:
+        condition: service_healthy
+
+    labels:
+      logging: "promtail"
+      logging_jobname: "containerlogs"
+  db:
+    image: postgres:14-alpine
+    volumes:
+      - ${DB_PATH}:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${DB_USER} -d ${DB_NAME}'" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+# Для доступа к бд извне нужно раскомментировать две строчки ниже
+#    ports:
+#      - "5432:5432"
+  redis:
+    image: redis
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+
+  celery:
+    restart: always
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    command: celery -A link worker -l info
+    volumes:
+      - ${WEB_STATIC}:/home/app/web/static/
+      - ${WEB_MEDIA}:/home/app/web/media/
+    deploy:
+      resources:
+        limits:
+          memory: 500M
+        reservations:
+          memory: 100M
+    labels:
+      logging: "promtail"
+      logging_jobname: "containerlogs"
+
