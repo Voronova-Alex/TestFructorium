@@ -1,4 +1,5 @@
 from django.db import transaction
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from apps.bookmark.models.bookmark import Bookmark
@@ -31,7 +32,10 @@ class CollectionDetailSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "links",
+            "created",
+            "updated",
         )
+        extra_kwargs = {"updated": {"read_only": True}, "created": {"read_only": True}}
 
 
 class UserFilteredPrimaryKeyRelatedField(serializers.PrimaryKeyRelatedField):
@@ -66,3 +70,25 @@ class CollectionUpdateSerializer(serializers.ModelSerializer):
         if links:
             instance.links.set(links)
         return obj
+
+
+class CollectionBookmarkSerializer(serializers.Serializer):
+    collections = serializers.SerializerMethodField()
+    none = serializers.SerializerMethodField()
+
+
+    @extend_schema_field(CollectionDetailSerializer(many=True))
+    def get_collections(self, instance):
+        context = {"request": self.context["request"]}
+        queryset = Collection.objects.filter(
+            owner=self.context["request"].user
+        ).order_by("title")
+        return CollectionDetailSerializer(queryset, many=True, context=context).data
+
+    @extend_schema_field(BookmarkDetailSerializer(many=True))
+    def get_none(self, instance):
+        context = {"request": self.context["request"]}
+        queryset = Bookmark.objects.filter(
+            owner=self.context["request"].user, collections__isnull=True
+        ).order_by("title")
+        return BookmarkDetailSerializer(queryset, many=True, context=context).data

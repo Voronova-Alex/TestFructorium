@@ -1,3 +1,4 @@
+from django.db.models import Case, When, Value
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework.generics import (
     RetrieveDestroyAPIView,
@@ -34,13 +35,15 @@ class BookmarkDetailView(RetrieveDestroyAPIView):
 @extend_schema_view(
     post=extend_schema(
         summary="Создать закладку",
+    ),
+    get=extend_schema(
+        summary="Получить список закладок"
     )
 )
 class BookmarkCreateView(ListCreateAPIView):
     def get_queryset(self):
         if getattr(self, "swagger_fake_view", False):
             return Bookmark.objects.none()
-
         return Bookmark.objects.filter(owner=self.request.user)
 
     def get_serializer_class(self):

@@ -41,4 +41,13 @@ class BookmarkDetailSerializer(serializers.ModelSerializer):
             "type_url",
             "image",
             "description",
+            "created",
+            "updated",
         )
+        extra_kwargs = {
+            "updated": {"read_only": True},
+            "created": {"read_only": True}
+        }
+
+
+
