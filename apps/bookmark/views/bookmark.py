@@ -36,9 +36,7 @@ class BookmarkDetailView(RetrieveDestroyAPIView):
     post=extend_schema(
         summary="Создать закладку",
     ),
-    get=extend_schema(
-        summary="Получить список закладок"
-    )
+    get=extend_schema(summary="Получить список закладок"),
 )
 class BookmarkCreateView(ListCreateAPIView):
     def get_queryset(self):

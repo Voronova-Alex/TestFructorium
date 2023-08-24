@@ -64,7 +64,6 @@ class PasswordUpdateSerializer(serializers.ModelSerializer):
         model = Account
         fields = ("password", "old_password")
 
-
     def validate_old_password(self, value):
         user = self.context["request"].user
         if not user.check_password(value):

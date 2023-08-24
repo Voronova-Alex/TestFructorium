@@ -26,7 +26,7 @@ def get_info(validated_data):
             name = urlparse(data_json["image"]).path.split("/")[-1]
             content = urllib.request.urlretrieve(data_json["image"])
             url = content[0]
-            image.img.save(name, File(open(url, 'rb')), save=True)
+            image.img.save(name, File(open(url, "rb")), save=True)
             validated_data["image"] = image
     elif "title" not in data_json and "description" not in data_json:
         data = requests.get(validated_data["url"])
@@ -35,14 +35,11 @@ def get_info(validated_data):
         meta_descriptions = soup.find_all("meta description")
         validated_data["type_url"] = Bookmark.UrlTypes.WEBSITE
         if titles:
-            validated_data["title"] = ". ".join(
-                [title.get_text() for title in titles]
-            )[:50]
+            validated_data["title"] = ". ".join([title.get_text() for title in titles])[
+                :50
+            ]
         if meta_descriptions:
             validated_data["description"] = ". ".join(
-                [
-                    meta_description.get_text()
-                    for meta_description in meta_descriptions
-                ]
+                [meta_description.get_text() for meta_description in meta_descriptions]
             )
     return validated_data

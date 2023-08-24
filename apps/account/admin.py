@@ -38,5 +38,3 @@ class AccountAdmin(UserAdmin):
         ),
     )
     ordering = ("-email",)
-
-

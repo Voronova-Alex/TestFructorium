@@ -44,10 +44,4 @@ class BookmarkDetailSerializer(serializers.ModelSerializer):
             "created",
             "updated",
         )
-        extra_kwargs = {
-            "updated": {"read_only": True},
-            "created": {"read_only": True}
-        }
-
-
-
+        extra_kwargs = {"updated": {"read_only": True}, "created": {"read_only": True}}

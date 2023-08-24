@@ -15,7 +15,13 @@ class Bookmark(models.Model):
     title = models.CharField(max_length=50, blank=True)
     description = models.TextField(blank=True)
     url = models.URLField()
-    image = models.ForeignKey(Image, on_delete=models.CASCADE, related_name="bookmark_images", blank=True, null=True)
+    image = models.ForeignKey(
+        Image,
+        on_delete=models.CASCADE,
+        related_name="bookmark_images",
+        blank=True,
+        null=True,
+    )
     type_url = models.CharField(choices=UrlTypes.choices)
     owner = models.ForeignKey(
         Account, on_delete=models.CASCADE, related_name="bookmarks"

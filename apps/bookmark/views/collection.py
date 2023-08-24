@@ -1,6 +1,11 @@
 from drf_spectacular.utils import extend_schema, extend_schema_view
-from rest_framework.generics import RetrieveUpdateDestroyAPIView, CreateAPIView, ListCreateAPIView, ListAPIView, \
-    RetrieveAPIView
+from rest_framework.generics import (
+    RetrieveUpdateDestroyAPIView,
+    CreateAPIView,
+    ListCreateAPIView,
+    ListAPIView,
+    RetrieveAPIView,
+)
 from rest_framework.views import APIView
 
 from apps.bookmark.models.collection import Collection
@@ -8,7 +13,8 @@ from apps.bookmark.serializers.bookmark import BookmarkDetailSerializer
 from apps.bookmark.serializers.collection import (
     CollectionDetailSerializer,
     CollectionUpdateSerializer,
-    CollectionCreateSerializer, CollectionBookmarkSerializer,
+    CollectionCreateSerializer,
+    CollectionBookmarkSerializer,
 )
 
 
@@ -47,12 +53,10 @@ class CollectionDetailView(RetrieveUpdateDestroyAPIView):
 
 @extend_schema(tags=["collection"])
 @extend_schema_view(
-    get=extend_schema(
-        summary="Получить список коллекций"
-    ),
+    get=extend_schema(summary="Получить список коллекций"),
     post=extend_schema(
         summary="Создать коллекцию",
-    )
+    ),
 )
 class CollectionCreateView(ListCreateAPIView):
     serializer_class = CollectionCreateSerializer
@@ -64,14 +68,9 @@ class CollectionCreateView(ListCreateAPIView):
 
 
 @extend_schema(tags=["collection | bookmark"])
-@extend_schema_view(
-    get=extend_schema(
-        summary="Получить список коллекций и закладок"
-    )
-)
+@extend_schema_view(get=extend_schema(summary="Получить список коллекций и закладок"))
 class CollectionBookmarkListView(RetrieveAPIView):
     serializer_class = CollectionBookmarkSerializer
 
     def get_object(self):
         return self.request.user
-

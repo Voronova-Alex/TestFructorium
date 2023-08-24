@@ -15,8 +15,6 @@ class AccountManager(BaseUserManager):
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save()
-        print(user)
-        print(user.is_active)
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):

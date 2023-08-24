@@ -76,7 +76,6 @@ class CollectionBookmarkSerializer(serializers.Serializer):
     collections = serializers.SerializerMethodField()
     none = serializers.SerializerMethodField()
 
-
     @extend_schema_field(CollectionDetailSerializer(many=True))
     def get_collections(self, instance):
         context = {"request": self.context["request"]}
